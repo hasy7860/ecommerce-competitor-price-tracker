@@ -4,34 +4,21 @@ This project monitor product prices on a single Shopify store, stores historical
 
 Its designed for ecommerce businesses who want to track competitor prices automatically without manual checking.
 
-**Key Features:**
-Scrapes a single shopify store product JSON endpoints
-Stores historical variant-level pricing in PostgreSQL
-Detects price drops between snapshots
-Sends email alerts for new price drops
-Fully configurable and reusable for any Shopify store
+**Features:**
+Scrapes a single shopify store product JSON endpoints,
+Stores historical variant-level pricing in PostgreSQL,
+Detects price drops between snapshots,
+Sends email alerts for new price drops,
+Fully configurable and reusable for any Shopify store.
 
 **Tech Stack**
-Language: Python 3.x
+Language: Python
 Database: PostgreSQL
-Libraries: requests, psycopg2, yagmail
+Libraries: requests, psycopg2, yagmail, datetime
 Deployment: Local script (can be scheduled with cron)
 
 **Architecture**
-[Shopify JSON Endpoint]
-           |
-           v
-    [Python Scraper] 
-           |
-           v
-[PostgreSQL price_history table]
-           |
-           v
-  [Price Drop Detection]
-           |
-           v
-[Email Alerts via yagmail]
+Shopify JSON Endpoint -> Python Scraper -> PostgreSQL price_history table -> Price Drop Detection -> Email Alert via yagmail
 
-*I will continue from here tomorrow :(*
-*I can't even use single bracket :)*
+
 
