@@ -11,13 +11,13 @@ Detects price drops between snapshots,
 Sends email alerts for new price drops,
 Fully configurable and reusable for any Shopify store.
 
-**Tech Stack**
+**Tech Stack:**
 Language: Python
 Database: PostgreSQL
 Libraries: requests, psycopg2, yagmail, datetime
 Deployment: Local script (can be scheduled with cron)
 
-**Architecture**
+**Architecture:**
 Shopify JSON Endpoint -> Python Scraper -> PostgreSQL price_history table -> Price Drop Detection -> Email Alert via yagmail
 
 

@@ -1,38 +1,24 @@
-import requests, csv, os, psycopg2
-from datetime import datetime
+import requests, os, psycopg2, yagmail
+from src.transformer import transformer
+from src.reporter import send_alert
+from src.Detector import detect_price_drops
 
-URL = ""
+URL = "https://mrbeast.store/products.json"
 
+#Extract
 response = requests.get(URL)
 data = response.json()
 
-products = data.get("products", [])
+#Transform
+transformed_data = transformer(data)
 
-rows = []
-
-for product in products:
-    product_id = product['id']
-    product_title = product['title']
-
-    for variant in product['variants']:
-        variant_id = variant["id"]
-        sku = variant["sku"]
-        price = float(variant["price"])
-        compare_at = variant["compare_at_price"]
-        available = variant["available"]
-        updated_at = variant["updated_at"]
-        created_at = variant["created_at"]
-
-    rows.append([product_id, product_title, variant_id, sku, price, compare_at, available, updated_at, created_at, datetime.now()])
-
-file_exists = os.path.isfile("mrbeast_prices.csv")
-
+#Load
 connect = psycopg2.connect(
-    host="localhost",
-    dbname="db_name",
-    user="user_name",
-    password="password",
-    port=5432)
+        host="localhost",
+        dbname="ecommerce_competitor_price_tracker",
+        user="postgres",
+        password="1234",
+        port=5432)
 
 cursor = connect.cursor()
 
@@ -41,12 +27,15 @@ insert_query = """INSERT INTO product_price_history (
                   compare_at_price, available, variant_updated_at,
                   variant_created_at, scraped_at) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"""
 
-cursor.executemany(insert_query, rows)
-
+cursor.executemany(insert_query, transformed_data)
 connect.commit()
+
+#Detect
+drops = detect_price_drops(connect)
+
+#Report
+if drops:
+    send_alert(drops)
+
 cursor.close()
 connect.close()
-
-print("Data inserted successfully.")
-
-#I will continue tomorrow from here :)
